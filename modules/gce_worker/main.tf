@@ -1,3 +1,7 @@
+locals {
+  rate_limit_redis_address = "redis://${google_redis_instance.worker_rate_limit.host}:${google_redis_instance.worker_rate_limit.port}"
+}
+
 variable "config_com" {}
 variable "config_com_free" {}
 variable "config_org" {}
@@ -182,7 +186,7 @@ data "template_file" "cloud_config_com" {
 
     worker_config = <<EOF
 ${var.config_com}
-export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL=redis://${google_redis_instance.worker_rate_limit.host}:${google_redis_instance.worker_rate_limit.port}
+export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL="${local.rate_limit_redis_address}"
 EOF
 
     cloud_init_env = <<EOF
@@ -283,7 +287,7 @@ data "template_file" "cloud_config_com_free" {
 
     worker_config = <<EOF
 ${var.config_com_free}
-export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL=redis://${google_redis_instance.worker_rate_limit.host}:${google_redis_instance.worker_rate_limit.port}
+export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL="${local.rate_limit_redis_address}"
 EOF
 
     cloud_init_env = <<EOF
@@ -384,7 +388,7 @@ data "template_file" "cloud_config_org" {
 
     worker_config = <<EOF
 ${var.config_org}
-export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL=redis://${google_redis_instance.worker_rate_limit.host}:${google_redis_instance.worker_rate_limit.port}
+export TRAVIS_WORKER_GCE_RATE_LIMIT_REDIS_URL="${local.rate_limit_redis_address}"
 EOF
 
     cloud_init_env = <<EOF
@@ -486,6 +490,10 @@ resource "google_redis_instance" "worker_rate_limit" {
 
   redis_version = "REDIS_3_2"
   display_name  = "Worker Rate Limit"
+}
+
+output "rate_limit_redis_address" {
+  value = "${local.rate_limit_redis_address}"
 }
 
 output "workers_service_account_emails" {

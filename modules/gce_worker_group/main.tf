@@ -228,6 +228,7 @@ resource "heroku_app" "gcloud_cleanup" {
     GCLOUD_CLEANUP_LOOP_SLEEP                 = "${var.gcloud_cleanup_loop_sleep}"
     GCLOUD_CLEANUP_OPENCENSUS_SAMPLING_RATE   = "${var.gcloud_cleanup_opencensus_sampling_rate}"
     GCLOUD_CLEANUP_OPENCENSUS_TRACING_ENABLED = "${var.gcloud_cleanup_opencensus_tracing_enabled}"
+    GCLOUD_CLEANUP_RATE_LIMIT_REDIS_URL       = "${module.gce_workers.rate_limit_redis_address}"
     GCLOUD_LOG_HTTP                           = "no-log-http"
     GCLOUD_PROJECT                            = "${var.project}"
     GCLOUD_ZONE                               = "${var.gcloud_zone}"
